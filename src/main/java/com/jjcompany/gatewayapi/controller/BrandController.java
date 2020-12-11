@@ -16,20 +16,22 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+
 @RestController
-public class ProductController {
+public class BrandController {
 	
 	private static final String BASE_URL = "https://product-api-jj.herokuapp.com";
 	private OkHttpClient client;
 	
-	public ProductController() {
+	public BrandController() {
 		this.client = new OkHttpClient();
 	}
 	
-	
-	@GetMapping("/product")
+
+	@GetMapping("/brand")
 	public String all() throws IOException{
-		Request request = new Request.Builder().url(BASE_URL + "/product").build();
+		
+		Request request = new Request.Builder().url(BASE_URL + "/brand").build();
 
 		Call call = client.newCall(request);
 		Response response = call.execute();
@@ -37,12 +39,13 @@ public class ProductController {
 		return response.body().string();
 	}
 	
-	@PostMapping("/product")
-	public String newProduct(@org.springframework.web.bind.annotation.RequestBody String newProduct) throws IOException {
+	
+	@PostMapping("/brand")
+	public String newBrand(@org.springframework.web.bind.annotation.RequestBody String newBrand) throws IOException {
 		RequestBody body = RequestBody
-				.create(newProduct, MediaType.parse("application/json"));
+				.create(newBrand, MediaType.parse("application/json"));
 		Request request = new Request.Builder()
-				.url(BASE_URL + "/product")
+				.url(BASE_URL + "/brand")
 				.post(body)
 				.build();
 		
@@ -52,9 +55,9 @@ public class ProductController {
 		return response.body().string();
 	}
 	
-	@GetMapping("/product/{id}")
+	@GetMapping("/brand/{id}")
 	public String one(@PathVariable Long id) throws IOException {
-		Request request = new Request.Builder().url(BASE_URL + "/product/" + id).build();
+		Request request = new Request.Builder().url(BASE_URL + "/brand/" + id).build();
 		Call call = client.newCall(request);
 		Response response = call.execute();
 		
@@ -62,12 +65,12 @@ public class ProductController {
 	}
 	
 	
-	@PutMapping("/product/{id}")
-	public String replaceProduct(@org.springframework.web.bind.annotation.RequestBody  String newProduct, @PathVariable Long id) throws IOException {
+	@PutMapping("/brand/{id}")
+	public String replaceBrand(@org.springframework.web.bind.annotation.RequestBody  String newBrand, @PathVariable Long id) throws IOException {
 		RequestBody body = RequestBody
-				.create(newProduct, MediaType.parse("application/json"));
+				.create(newBrand, MediaType.parse("application/json"));
 		Request request = new Request.Builder()
-				.url(BASE_URL + "/product/" + id)
+				.url(BASE_URL + "/brand/" + id)
 				.put(body)
 				.build();
 		
@@ -77,12 +80,11 @@ public class ProductController {
 		return response.body().string();
 	}
 	
-	@DeleteMapping("/product/{id}")
-	void deleteProduct(@PathVariable Long id) throws IOException {
-		Request request = new Request.Builder().url(BASE_URL + "/product/" + id).delete().build();
+	@DeleteMapping("/brand/{id}")
+	void deleteBrand(@PathVariable Long id) throws IOException {
+		Request request = new Request.Builder().url(BASE_URL + "/brand/" + id).delete().build();
 		Call call = client.newCall(request);
 		Response response = call.execute();
 	}
-	
 	
 }
