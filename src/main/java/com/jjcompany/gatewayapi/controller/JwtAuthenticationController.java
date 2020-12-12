@@ -27,7 +27,7 @@ public class JwtAuthenticationController {
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
 		User user = userRepository.findByEmailAndPassword(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 		if(user == null) {
-			throw new RuntimeException("Usuario nao exise");
+			throw new RuntimeException("User doesn't exist");
 		}
 		
 		final String token = jwtTokenUtil.generateToken(authenticationRequest.getUsername());

@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -22,10 +24,6 @@ public class JwtTokenUtil implements Serializable {
 	@Value("${jwt.secret")
 	private String secret;
 
-	public String getUsernameFromToken(String token) {
-		return getClaimFromToken(token, Claims::getSubject);
-	}
-
 	public Date getExpirationDateFromToken(String token) {
 		return getClaimFromToken(token, Claims::getExpiration);
 	}
@@ -35,7 +33,19 @@ public class JwtTokenUtil implements Serializable {
 		return claimsResolver.apply(claims);
 	}
 
-	private Claims getAllClaimsFromToken(String token) {
+	public boolean isValidToken(String token) {
+		try {
+			Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+			if(isTokenExpired(token)) {
+				return false;
+			}
+			return true;
+		} catch(JwtException e) {
+			return false;
+		}
+	}
+	
+	public Claims getAllClaimsFromToken(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
 	}
 
@@ -53,10 +63,5 @@ public class JwtTokenUtil implements Serializable {
 		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
 				.signWith(SignatureAlgorithm.HS512, secret).compact();
-	}
-
-	public Boolean validateToken(String token, String username) {
-		final String usernameFromToken = getUsernameFromToken(token);
-		return (usernameFromToken.equals(username) && !isTokenExpired(token));
 	}
 }
