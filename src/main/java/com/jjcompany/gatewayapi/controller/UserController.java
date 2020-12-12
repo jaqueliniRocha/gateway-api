@@ -38,7 +38,7 @@ public class UserController {
 	@GetMapping("/user")
 	public ResponseEntity <String> all(@RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder()
 				.url(BASE_URL + "/user")
@@ -53,7 +53,7 @@ public class UserController {
 	@PostMapping("/user")
 	public ResponseEntity <String>  newUser(@org.springframework.web.bind.annotation.RequestBody String newUser, @RequestHeader(value = "Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		RequestBody body = RequestBody
 				.create(newUser, MediaType.parse("application/json"));
@@ -72,7 +72,7 @@ public class UserController {
 	@GetMapping("/user/{id}")
 	public ResponseEntity <String>  one(@PathVariable Long id, @RequestHeader(value = "Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder()
 				.url(BASE_URL + "/user/" + id)
@@ -87,7 +87,7 @@ public class UserController {
 	@PutMapping("/user/{id}")
 	public ResponseEntity <String>  replaceUser(@org.springframework.web.bind.annotation.RequestBody String newUser, @PathVariable Long id, @RequestHeader(value = "Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		RequestBody body = RequestBody
 				.create(newUser, MediaType.parse("application/json"));
@@ -103,15 +103,17 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/user/{id}")
-	public void deleteUser(@PathVariable Long id, @RequestHeader(value = "Authorization") String authorizationHeader) throws IOException {
+	public ResponseEntity<Object> deleteUser(@PathVariable Long id, @RequestHeader(value = "Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder()
 				.url(BASE_URL + "/user/" + id)
 				.delete().build();
 		Call call = client.newCall(request);
 		Response response = call.execute();
+		
+		return ResponseEntity.noContent().build();
 		
 	}
 

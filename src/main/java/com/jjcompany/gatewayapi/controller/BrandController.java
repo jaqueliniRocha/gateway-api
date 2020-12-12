@@ -39,7 +39,7 @@ public class BrandController {
 	@GetMapping("/brand")
 	public ResponseEntity<String> all(@RequestHeader(value="Authorization") String authorizationHeader) throws IOException{
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder()
 				.url(BASE_URL + "/brand")
@@ -55,7 +55,7 @@ public class BrandController {
 	@PostMapping("/brand")
 	public ResponseEntity<String> newBrand(@org.springframework.web.bind.annotation.RequestBody String newBrand, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		RequestBody body = RequestBody
 				.create(newBrand, MediaType.parse("application/json"));
@@ -73,7 +73,7 @@ public class BrandController {
 	@GetMapping("/brand/{id}")
 	public ResponseEntity<String> one(@PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder()
 				.url(BASE_URL + "/brand/" + id)
@@ -88,7 +88,7 @@ public class BrandController {
 	@PutMapping("/brand/{id}")
 	public ResponseEntity<String> replaceBrand(@org.springframework.web.bind.annotation.RequestBody  String newBrand, @PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		RequestBody body = RequestBody
 				.create(newBrand, MediaType.parse("application/json"));
@@ -104,9 +104,9 @@ public class BrandController {
 	}
 	
 	@DeleteMapping("/brand/{id}")
-	void deleteBrand(@PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
+	public ResponseEntity<Object> deleteBrand(@PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder()
 				.url(BASE_URL + "/brand/" + id)
@@ -114,6 +114,8 @@ public class BrandController {
 				.build();
 		Call call = client.newCall(request);
 		Response response = call.execute();
+		
+		return ResponseEntity.noContent().build();
 	}
 	
 }

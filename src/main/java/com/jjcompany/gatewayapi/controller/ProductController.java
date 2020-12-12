@@ -38,7 +38,7 @@ public class ProductController {
 	@GetMapping("/product")
 	public ResponseEntity<String> all(@RequestHeader(value="Authorization") String authorizationHeader) throws IOException{
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder().url(BASE_URL + "/product").build();
 
@@ -51,7 +51,7 @@ public class ProductController {
 	@PostMapping("/product")
 	public ResponseEntity<String> newProduct(@org.springframework.web.bind.annotation.RequestBody String newProduct, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		RequestBody body = RequestBody
 				.create(newProduct, MediaType.parse("application/json"));
@@ -69,7 +69,7 @@ public class ProductController {
 	@GetMapping("/product/{id}")
 	public ResponseEntity<String> one(@PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder().url(BASE_URL + "/product/" + id).build();
 		Call call = client.newCall(request);
@@ -82,7 +82,7 @@ public class ProductController {
 	@PutMapping("/product/{id}")
 	public ResponseEntity<String> replaceProduct(@org.springframework.web.bind.annotation.RequestBody  String newProduct, @PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		RequestBody body = RequestBody
 				.create(newProduct, MediaType.parse("application/json"));
@@ -98,13 +98,15 @@ public class ProductController {
 	}
 	
 	@DeleteMapping("/product/{id}")
-	void deleteProduct(@PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
+	public ResponseEntity<Object> deleteProduct(@PathVariable Long id, @RequestHeader(value="Authorization") String authorizationHeader) throws IOException {
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().build();
 		}
 		Request request = new Request.Builder().url(BASE_URL + "/product/" + id).delete().build();
 		Call call = client.newCall(request);
 		Response response = call.execute();
+		
+		return ResponseEntity.noContent().build();
 	}
 	
 	
