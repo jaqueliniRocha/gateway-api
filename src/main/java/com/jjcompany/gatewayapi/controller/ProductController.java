@@ -1,8 +1,6 @@
 package com.jjcompany.gatewayapi.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,20 +36,6 @@ public class ProductController {
 	public ProductController() {
 		this.client = new OkHttpClient();
 	}
-	
-	@GetMapping("/product/expired")
-	public ResponseEntity<String> findExpiredProducts(@RequestHeader(value="Authorization") String authorizationHeader) throws IOException{
-		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
-			return ResponseEntity.badRequest().build();
-		}
-		Request request = new Request.Builder().url("https://product-report-api-jj.herokuapp.com/product/expired").build();
-
-		Call call = client.newCall(request);
-		Response response = call.execute();
-		
-		return ResponseEntity.ok(response.body().string());
-	}
-	
 	
 	@GetMapping("/product")
 	public ResponseEntity<String> all(@RequestHeader(value="Authorization") String authorizationHeader) throws IOException{
