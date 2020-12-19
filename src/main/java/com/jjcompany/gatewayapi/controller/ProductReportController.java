@@ -31,7 +31,7 @@ public class ProductReportController {
 		this.client = new OkHttpClient();
 	}
 	
-	@GetMapping("/productReport")
+	@GetMapping("/product/expired")
 	public ResponseEntity<String> findExpiredProducts(@RequestHeader(value="Authorization") String authorizationHeader) throws IOException{
 		if(!jwtTokenUtil.isValidToken(authorizationHeader.replace("Bearer ", ""))) {
 			return ResponseEntity.badRequest().build();
